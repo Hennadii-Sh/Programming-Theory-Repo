@@ -6,11 +6,10 @@ public abstract class GeometricShape : MonoBehaviour
 {
     public GameObject spawnPointObj;
     public Transform spawnPointTr;
-    [SerializeField] protected MainManager mainManager;
     protected GameObject shapeObj;
 
-    protected virtual float StartingYAngle { get; set; } = 0;
-
+    protected abstract float StartingYAngle { get; set; }
+    public abstract int FigurePropertiesQuantity { get; set; }
 
     // DOES I NEED THIS ????
     private float volume;
@@ -22,20 +21,22 @@ public abstract class GeometricShape : MonoBehaviour
     public abstract float VolumeCalculation();
     public abstract float AreaCalculation();
 
-
-
-    public void DestroySpawnPointChildren()
+    private void DestroySpawnPointChildren()
     {
         foreach (Transform child in spawnPointTr)
         {
             Destroy(child.gameObject);
         }
     }
+
     public abstract void CreateNewShape();
     public void InstantiateNewShape()
     {
         DestroySpawnPointChildren();
         CreateNewShape();
+        MainManager.Instance.isNewShapeCreated = true;
+        MainManager.Instance.shapeObject = shapeObj;
+        MainManager.Instance.FigurePropertiesQuantity = FigurePropertiesQuantity;
         shapeObj.AddComponent<ObjectController>();
         SetShapeMaterial();
         shapeObj.transform.Rotate(transform.up, StartingYAngle);
@@ -50,19 +51,18 @@ public abstract class GeometricShape : MonoBehaviour
     public void SetShapeMaterial()
     {
         Renderer rend = shapeObj.GetComponent<Renderer>();
-        rend.material = mainManager.shapeMaterial;
-
+        rend.material = MainManager.Instance.shapeMaterial;
 
         //This works to:
-        //rend.material.SetTexture("_MainTex", mainManager.selectedTexture);   //Instantiate instance of Default-material on object and set it texture to selected
-        //MeshRenderer meshrend = shapeObj.GetComponent<MeshRenderer>();
-        //meshrend.material = mainManager.shapeMaterial;  //Do the same as "rend.material = mainManager.shapeMaterial;"
+        //rend.material.mainTexture = MainManager.Instance.shapeTextures[1];   //Create instance of object applied material and set it texture to selected
+        //rend.material.SetTexture("_MainTex", shapeTextures[1]);   //(Same) Create instance of object applied material and set it texture to selected
+        //MeshRenderer meshrend = shapeObj.GetComponent<MeshRenderer>();  //Do the same as "rend.material = MainManager.Instance.shapeMaterial;"
+        //meshrend.material = MainManager.Instance.shapeMaterial;
     }
 
-    private void Awake()
+    protected virtual void Awake()
     {
         spawnPointObj = GameObject.Find("Spawn Point");
         spawnPointTr = spawnPointObj.GetComponent<Transform>();
-        mainManager = GameObject.Find("Main Manager").GetComponent<MainManager>();
     }
 }

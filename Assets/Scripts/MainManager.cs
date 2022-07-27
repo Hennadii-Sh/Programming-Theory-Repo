@@ -6,19 +6,17 @@ public class MainManager : MonoBehaviour
 {
     public Material shapeMaterial;
     public Texture2D[] shapeTextures;
+    public GameObject shapeObject;
+    public int FigurePropertiesQuantity;
+    public bool isNewShapeCreated;
+
+    public static MainManager Instance;
 
     private void Awake()
     {
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-
+        if (Instance != null)
+            Destroy(gameObject);
+        else Instance = this;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }
