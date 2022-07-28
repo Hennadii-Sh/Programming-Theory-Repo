@@ -4,10 +4,16 @@ using UnityEngine;
 
 public class CubeScript : GeometricShape
 {
+    private List<string> propertieName = new List<string>() { "Volume", "Area", "Edge" };
+
     private float side = 1;
     public float Side { get; set; }
     protected override float StartingYAngle { get; set; } = 0;
-    public override int FigurePropertiesQuantity { get; set; } = 3;
+
+    public override void SendPropertiesNames()
+    {
+        dataSetPanelController.propertieName = new List<string>(propertieName);
+    }
 
     public override void CreateNewShape()
     {

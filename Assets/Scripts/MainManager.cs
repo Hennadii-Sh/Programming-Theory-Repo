@@ -7,7 +7,6 @@ public class MainManager : MonoBehaviour
     public Material shapeMaterial;
     public Texture2D[] shapeTextures;
     public GameObject shapeObject;
-    public int FigurePropertiesQuantity;
     public bool isNewShapeCreated;
 
     public static MainManager Instance;

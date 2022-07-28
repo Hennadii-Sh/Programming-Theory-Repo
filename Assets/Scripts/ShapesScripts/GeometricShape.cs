@@ -6,10 +6,12 @@ public abstract class GeometricShape : MonoBehaviour
 {
     public GameObject spawnPointObj;
     public Transform spawnPointTr;
+    protected DataSetPanelController dataSetPanelController;
     protected GameObject shapeObj;
 
     protected abstract float StartingYAngle { get; set; }
-    public abstract int FigurePropertiesQuantity { get; set; }
+
+    private List<string> propertieName = new List<string>();
 
     // DOES I NEED THIS ????
     private float volume;
@@ -20,6 +22,11 @@ public abstract class GeometricShape : MonoBehaviour
 
     public abstract float VolumeCalculation();
     public abstract float AreaCalculation();
+
+    public virtual void SendPropertiesNames()
+    {
+        dataSetPanelController.propertieName = new List<string>(propertieName);
+    }
 
     private void DestroySpawnPointChildren()
     {
@@ -33,13 +40,16 @@ public abstract class GeometricShape : MonoBehaviour
     public void InstantiateNewShape()
     {
         DestroySpawnPointChildren();
+        ClearDataSetPanel();
         CreateNewShape();
+        SendPropertiesNames();
+
         MainManager.Instance.isNewShapeCreated = true;
         MainManager.Instance.shapeObject = shapeObj;
-        MainManager.Instance.FigurePropertiesQuantity = FigurePropertiesQuantity;
         shapeObj.AddComponent<ObjectController>();
         SetShapeMaterial();
         shapeObj.transform.Rotate(transform.up, StartingYAngle);
+
     }
     
     public bool IsFloat(string value)
@@ -64,5 +74,18 @@ public abstract class GeometricShape : MonoBehaviour
     {
         spawnPointObj = GameObject.Find("Spawn Point");
         spawnPointTr = spawnPointObj.GetComponent<Transform>();
+        dataSetPanelController = GameObject.Find("DataSet Panel").GetComponent<DataSetPanelController>();
+    }
+
+
+
+
+    private void ClearDataSetPanel()
+    {
+        Transform transform = dataSetPanelController.gameObject.transform;
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject, 0);
+        }
     }
 }

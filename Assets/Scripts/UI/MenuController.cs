@@ -9,8 +9,7 @@ public class MenuController : MonoBehaviour
     [SerializeField] private Button backToCalculationsButton;
     [SerializeField] private GameObject shapeSelectionPanel;
     [SerializeField] private GameObject calculationsPanel;
-    [SerializeField] private GameObject lineOfdDataPanel;
-    [SerializeField] private GameObject dataSetPanel;
+    [SerializeField] private DataSetPanelController dataSetPanelController;
 
     public static MenuController Instance;
 
@@ -41,35 +40,8 @@ public class MenuController : MonoBehaviour
         calculationsPanel.SetActive(true);
         if (MainManager.Instance.isNewShapeCreated)
         {
-            FillDataPanel(MainManager.Instance.FigurePropertiesQuantity);
+            dataSetPanelController.StartNewCalculations();
             MainManager.Instance.isNewShapeCreated = false;
         }
-    }
-
-
-    private void ClearDataSetPanel()
-    {
-        foreach (Transform child in dataSetPanel.transform)
-        {
-            Destroy(child.gameObject);
-        }
-    }
-    public void AddLinesOfDataToDataSetPanel(int quantity)
-    {
-        for (int i = 0; i < quantity; i++)
-        {
-            GameObject newLine = Instantiate(lineOfdDataPanel, dataSetPanel.transform, false);
-            float lineHeight = 60;
-            if (i > 0)
-            {
-                newLine.transform.Translate(Vector3.down * lineHeight * i);
-            }
-        }
-    }
-
-    public void FillDataPanel(int quantity)
-    {
-        ClearDataSetPanel();
-        AddLinesOfDataToDataSetPanel(quantity);
     }
 }
