@@ -6,46 +6,57 @@ using TMPro;
 
 public class DataSetPanelController : MonoBehaviour
 {
-    public List<string> propertieName = new List<string>();
-    public List<GameObject> LinesOfDataObj = new List<GameObject>();
+    public List<string> lineOfDataName = new List<string>();
+    public List<GameObject> linesOfDataObj = new List<GameObject>();
 
-    [SerializeField] private GameObject lineOfdDataPanel;
+    [SerializeField] private GameObject lineOfdDataPrefab;
+    [SerializeField] private GameObject calculateButton;  // // DELETE ????????????????????????????????????????????????
+    private float lineHeight = 60;
 
+    //--------------------------------------------------------------------------------------------------------------------------
 
-
-    public void StartNewCalculations()
+    public void CreateNewDataSetPanel()
     {
-        AddLinesOfDataToDataSetPanel(propertieName.Count);
+        AddLinesOfDataToDataSetPanel(lineOfDataName.Count);
+        //AddCalculateButton(lineOfDataName.Count);    // DELETE ????????????????????????????????????????????????
 
-        LinesOfDataObj.Clear();
+        linesOfDataObj.Clear();
         GetLinesOfDataObjList();
 
-        SetNamesToLinesOfData(LinesOfDataObj, propertieName);
+        SetNamesToLinesOfData(linesOfDataObj, lineOfDataName);
         //++++++++Add another function and/or entry to further calculations
     }
 
-    public void AddLinesOfDataToDataSetPanel(int quantity)
+    // Methods, adding UI ELEMENTS !!
+    public void AddLinesOfDataToDataSetPanel(int linesQuantity)
     {
-        for (int i = 0; i < quantity; i++)
+        GameObject newLine;
+
+        for (int i = 0; i < linesQuantity; i++)
         {
-            GameObject newLine = Instantiate(lineOfdDataPanel, gameObject.transform, false);
-            float lineHeight = 60;
+            newLine = Instantiate(lineOfdDataPrefab, gameObject.transform, false);
+
+            Transform newLineTr = newLine.transform.Find("InputField");
+            newLineTr.gameObject.GetComponent<ValueFieldController>().FieldIndex = i;  //Set index to new input field!!
+
+            //Position new line on panel, depending on index:
             if (i > 0)
             {
                 newLine.transform.Translate(Vector3.down * lineHeight * i);
             }
         }
     }
+  
+    //public void AddCalculateButton(int linesQuantity)   // DELETE ????????????????????????????????????????????????
+    //{
+    //    GameObject newCalculateButton = Instantiate(calculateButton, gameObject.transform, false);
+    //    newCalculateButton.transform.Translate(Vector3.down * lineHeight * linesQuantity);
 
-    private void GetLinesOfDataObjList()
-    {
-        LinesOfDataObj.Clear();
+    //}
+    // END
 
-        foreach (Transform child in gameObject.transform)
-        {
-            LinesOfDataObj.Add(child.gameObject);
-        }
-    }
+
+    // Methods, NAMING lines of data in UI
     private void SetNamesToLinesOfData(List<GameObject> ListToSetNames, List<string> ListOfNames)
     {
         for (int i = 0; i < ListToSetNames.Count; i++)
@@ -58,6 +69,21 @@ public class DataSetPanelController : MonoBehaviour
         Transform dataLineNameTr = lineOfDataObj.transform.Find("Text");
         TextMeshProUGUI dataLineName = dataLineNameTr.gameObject.GetComponent<TextMeshProUGUI>();
         dataLineName.text = name;
+    }
+    // END
+
+    // Getting LineOfData objects to list
+    private void GetLinesOfDataObjList()
+    {
+        linesOfDataObj.Clear();
+
+        foreach (Transform child in gameObject.transform)
+        {
+            if (child.CompareTag("LineOfData"))
+            {
+                linesOfDataObj.Add(child.gameObject);
+            }
+        }
     }
 
 }

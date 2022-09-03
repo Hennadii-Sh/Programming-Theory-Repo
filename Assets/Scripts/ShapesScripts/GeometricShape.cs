@@ -7,25 +7,20 @@ public abstract class GeometricShape : MonoBehaviour
     public GameObject spawnPointObj;
     public Transform spawnPointTr;
     protected DataSetPanelController dataSetPanelController;
+    //[SerializeField] protected GameObject dataSetPanelObject;
     protected GameObject shapeObj;
 
     protected abstract float StartingYAngle { get; set; }
 
     private List<string> propertieName = new List<string>();
 
-    // DOES I NEED THIS ????
-    private float volume;
-    public virtual float Volume { get => volume; set => volume = value; }
-    private float area;
-    public virtual float Area { get => area; set => area = value; }
-    //---------------------------------------------
 
-    public abstract float VolumeCalculation();
-    public abstract float AreaCalculation();
+    //--------------------------------------------------------------------------------------------------------------------------
+
 
     public virtual void SendPropertiesNames()
     {
-        dataSetPanelController.propertieName = new List<string>(propertieName);
+        dataSetPanelController.lineOfDataName = new List<string>(propertieName);
     }
 
     private void DestroySpawnPointChildren()
@@ -44,8 +39,10 @@ public abstract class GeometricShape : MonoBehaviour
         CreateNewShape();
         SendPropertiesNames();
 
-        MainManager.Instance.isNewShapeCreated = true;
-        MainManager.Instance.shapeObject = shapeObj;
+        MainManager.Instance.isNewShapeCreated = true;  // Set variable for menu controller script
+
+        MainManager.Instance.shapeObject = shapeObj; // - ????  not used
+
         shapeObj.AddComponent<ObjectController>();
         SetShapeMaterial();
         shapeObj.transform.Rotate(transform.up, StartingYAngle);
@@ -77,15 +74,12 @@ public abstract class GeometricShape : MonoBehaviour
         dataSetPanelController = GameObject.Find("DataSet Panel").GetComponent<DataSetPanelController>();
     }
 
-
-
-
     private void ClearDataSetPanel()
     {
         Transform transform = dataSetPanelController.gameObject.transform;
         foreach (Transform child in transform)
         {
-            Destroy(child.gameObject, 0);
+            Destroy(child.gameObject);
         }
     }
 }
